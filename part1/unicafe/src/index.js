@@ -1,6 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const Button = ({text, increment}) =>{
+    return <div>
+        <button onClick={increment}>{text}</button>
+    </div>
+}
+const Statistic = ({text, value}) =>{
+    return <p>{text} {value}</p>;
+}
 const Statistics = ({good, neutral, bad, total}) =>{
     if(total === 0){
         return <div>
@@ -10,12 +18,12 @@ const Statistics = ({good, neutral, bad, total}) =>{
     return(
         <div>
             <h2>Statistics</h2>
-            <p>Good {good}</p>
-            <p>Neutral {neutral}</p>
-            <p>Bad {bad}</p>
-            <p>All {total}</p>
-            <p>Average {(good-bad)/(total)}</p>
-            <p>Positive {parseInt(good*100)/total}%</p>
+            <Statistic text = "Good" value={good}/>
+            <Statistic text = "Neutral" value={neutral}/>
+            <Statistic text = "Bad" value={bad}/>
+            <Statistic text = "Total" value={total}/>
+            <Statistic text = "Average" value={(good-bad)/(total)}/>
+            <Statistic text = "Positive" value={parseInt(good*100)/total}/>
         </div>
     );
 }
@@ -40,9 +48,9 @@ const App = () =>{
     return(
         <div>
             <h1>Give Feedback</h1>
-            <button onClick={incGood}>Good</button>
-            <button onClick={incNeutral}>Neutral</button>
-            <button onClick={incBad}>Bad</button>
+            <Button text="Good" increment={incGood}/>
+            <Button text="Neutral" increment={incNeutral}/>
+            <Button text="Bad" increment={incBad}/>
             <Statistics good={good} neutral={neutral} bad={bad} total={good+neutral+bad} />
         </div>
     );
