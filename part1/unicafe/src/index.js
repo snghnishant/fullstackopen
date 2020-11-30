@@ -2,7 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 const Statistics = ({good, neutral, bad, total}) =>{
-    
+    if(total === 0){
+        return <div>
+           <h3> No feedback given. </h3>
+        </div>
+    }
     return(
         <div>
             <h2>Statistics</h2>
