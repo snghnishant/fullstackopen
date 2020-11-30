@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 const Button = ({text, increment}) =>{
-    return <div>
-        <button onClick={increment}>{text}</button>
-    </div>
+    return <button onClick={increment}>{text}</button>
 }
 const Statistic = ({text, value}) =>{
-    return <p>{text} {value}</p>;
+    return (<tr>
+        <td>{text}</td> 
+        <td>{value}</td>
+        </tr>);
 }
 const Statistics = ({good, neutral, bad, total}) =>{
     if(total === 0){
@@ -17,13 +18,22 @@ const Statistics = ({good, neutral, bad, total}) =>{
     }
     return(
         <div>
-            <h2>Statistics</h2>
-            <Statistic text = "Good" value={good}/>
-            <Statistic text = "Neutral" value={neutral}/>
-            <Statistic text = "Bad" value={bad}/>
-            <Statistic text = "Total" value={total}/>
-            <Statistic text = "Average" value={(good-bad)/(total)}/>
-            <Statistic text = "Positive" value={parseInt(good*100)/total}/>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Statistics</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <Statistic text = "Good" value={good}/>
+                    <Statistic text = "Neutral" value={neutral}/>
+                    <Statistic text = "Bad" value={bad}/>
+                    <Statistic text = "Total" value={total}/>
+                    <Statistic text = "Average" value={((good-bad)/ (total)).toFixed(1)}/>
+                    <Statistic text = "Positive" value={parseInt(   (good*100)/total).toFixed(1)}/>
+                </tbody>
+                <tfoot></tfoot> 
+            </table>         
         </div>
     );
 }
