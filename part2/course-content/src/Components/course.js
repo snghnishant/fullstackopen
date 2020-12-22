@@ -5,7 +5,6 @@ const Header = (props) => {
 };
 
 const Part = (props) => {
-	console.log(`${props.name} ${props.exCount}`);
 	return (
 		<p>
 			{props.name} {props.exCount}
@@ -23,17 +22,17 @@ const Content = ({ parts }) => {
 	);
 };
 
-// const Total = ({ parts }) => {
-// 	const total = 0;
-// 	return <p>Number of exercises {total}</p>;
-// };
+const Total = ({ parts }) => {
+	const total = parts.reduce((sum, { exercises }) => sum + exercises, 0);
+	return <strong>Total number of exercises {total}</strong>;
+};
 
 const Course = ({ course }) => {
 	return (
 		<div>
 			<Header courseName={course.name} />
 			<Content parts={course.parts} />
-			{/* <Total parts={course.parts} /> */}
+			<Total parts={course.parts} />
 		</div>
 	);
 };
