@@ -1,18 +1,28 @@
 import { React, useState } from "react";
 import "./App.css";
 
-const ListItem = ({ name }) => {
-	return <li>{name}</li>;
+const ListItem = ({ name, phone }) => {
+	return (
+		<li>
+			{name} : {phone}
+		</li>
+	);
 };
 
 const App = () => {
-	const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
+	const [persons, setPersons] = useState([
+		{ name: "NAME", phone: "PHONE NUMBER" },
+	]);
 	const [newName, setNewName] = useState("");
+	const [newPhone, setNewPhone] = useState("");
 
 	//Event handlers
 	const handleNameChange = (event) => {
-		console.log(event.target.value);
 		setNewName(event.target.value);
+	};
+
+	const handlePhoneChange = (event) => {
+		setNewPhone(event.target.value);
 	};
 
 	const addName = (event) => {
@@ -20,12 +30,17 @@ const App = () => {
 
 		const recordObject = {
 			name: newName,
+			phone: newPhone,
 		};
+
 		if (persons.find((person) => person.name === newName)) {
 			alert(`${newName} already present. Can't Add!`);
+		} else if (persons.find((person) => person.phone === newPhone)) {
+			alert(`${newPhone} already present. Can't Add!`);
 		} else {
 			setPersons(persons.concat(recordObject));
 			setNewName("");
+			setNewPhone("");
 		}
 	};
 
@@ -34,7 +49,9 @@ const App = () => {
 			<h2>Phonebook</h2>
 			<form>
 				<div>
-					Name: <input value={newName} onChange={handleNameChange} />
+					NAME: <input value={newName} onChange={handleNameChange} />
+					PHONE:{" "}
+					<input value={newPhone} onChange={handlePhoneChange} />
 				</div>
 				<div>
 					<button type="submit" onClick={addName}>
@@ -42,11 +59,15 @@ const App = () => {
 					</button>
 				</div>
 			</form>
-			<h2>Numbers</h2>
-			<div>Debug: {newName}</div>
+			<h2>Contact List</h2>
 			<ul>
 				{persons.map((person, index) => (
-					<ListItem key={index} key name={person.name} />
+					<ListItem
+						key={index}
+						key
+						name={person.name}
+						phone={person.phone}
+					/>
 				))}
 			</ul>
 		</div>
