@@ -1,15 +1,11 @@
 import { React, useState } from "react";
 import "./App.css";
-
-const ListItem = ({ name, phone }) => {
-	return (
-		<li>
-			{name} : {phone}
-		</li>
-	);
-};
+import ListItem from "./Components/listItem";
+import ContactForm from "./Components/contactForm";
+import SearchForm from "./Components/searchContact";
 
 const App = () => {
+	//State Initialization
 	const [persons, setPersons] = useState([
 		{ name: "Arto Hellas", phone: "040-123456" },
 		{ name: "Ada Lovelace", phone: "39-44-5323523" },
@@ -18,7 +14,7 @@ const App = () => {
 	]);
 	const [newName, setNewName] = useState("");
 	const [newPhone, setNewPhone] = useState("");
-	const [filterName, setFilterName] = useState(null);
+	const [filterName, setFilterName] = useState("");
 
 	//Event handlers
 	const handleFilterNameChange = (event) => {
@@ -33,7 +29,8 @@ const App = () => {
 		setNewPhone(event.target.value);
 	};
 
-	const addName = (event) => {
+	//Form submit handler
+	const addContact = (event) => {
 		event.preventDefault();
 
 		const recordObject = {
@@ -52,19 +49,22 @@ const App = () => {
 		}
 	};
 
-	const matchedContacts = filterName
-		? persons.filter((person) =>
-				person.name.toLowerCase().includes(filterName.toLowerCase())
-		  )
-		: [];
+	// Case Insensitive contact filtering
+	const matchedContacts =
+		filterName !== ""
+			? persons.filter((person) =>
+					person.name.toLowerCase().includes(filterName.toLowerCase())
+			  )
+			: [];
 
 	return (
 		<div>
-			<h2>Phonebook</h2>
-			<div>
-				Search Contacts:{" "}
-				<input value={filterName} onChange={handleFilterNameChange} />
-			</div>
+			<h2>Phone Book</h2>
+
+			<SearchForm
+				filterName={filterName}
+				event={handleFilterNameChange}
+			/>
 			<ul>
 				{matchedContacts.map((person, index) => (
 					<ListItem
@@ -74,20 +74,15 @@ const App = () => {
 					/>
 				))}
 			</ul>
-			<form>
-				<div>
-					NAME: <input value={newName} onChange={handleNameChange} />{" "}
-					<br />
-					PHONE:{" "}
-					<input value={newPhone} onChange={handlePhoneChange} />{" "}
-					<br />
-				</div>
-				<div>
-					<button type="submit" onClick={addName}>
-						Add Contact
-					</button>
-				</div>
-			</form>
+
+			<ContactForm
+				value1={newName}
+				handler1={handleNameChange}
+				value2={newPhone}
+				handler2={handlePhoneChange}
+				handler3={addContact}
+			/>
+
 			<h2>Contact List</h2>
 			<ul>
 				{persons.map((person, index) => (
