@@ -21,9 +21,12 @@ const App = () => {
 		const recordObject = {
 			name: newName,
 		};
-
-		setPersons(persons.concat(recordObject));
-		setNewName("");
+		if (persons.find((person) => person.name === newName)) {
+			alert(`${newName} already present. Can't Add!`);
+		} else {
+			setPersons(persons.concat(recordObject));
+			setNewName("");
+		}
 	};
 
 	return (
