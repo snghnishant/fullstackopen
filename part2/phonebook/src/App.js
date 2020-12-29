@@ -1,20 +1,27 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
+import axios from "axios";
 import "./App.css";
 import ListItem from "./Components/listItem";
 import ContactForm from "./Components/contactForm";
 import SearchForm from "./Components/searchContact";
+import { getAll, addNew } from "./Services/persons";
 
 const App = () => {
+	//Initial fetching of data from the json-server
+	const fetchInitData = () => {
+		getAll().then((initialData) => setPersons(initialData));
+	};
+
 	//State Initialization
-	const [persons, setPersons] = useState([
-		{ name: "Arto Hellas", phone: "040-123456" },
-		{ name: "Ada Lovelace", phone: "39-44-5323523" },
-		{ name: "Dan Abramov", phone: "12-43-234345" },
-		{ name: "Mary Poppendieck", phone: "39-23-6423122" },
-	]);
+	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState("");
 	const [newPhone, setNewPhone] = useState("");
 	const [filterName, setFilterName] = useState("");
+
+	//Fetching and data initialization
+	useEffect(fetchInitData, []);
+
+	console.log("Render", persons.length);
 
 	//Event handlers
 	const handleFilterNameChange = (event) => {
@@ -34,18 +41,22 @@ const App = () => {
 		event.preventDefault();
 
 		const recordObject = {
+			id: persons.length + 1,
 			name: newName,
-			phone: newPhone,
+			number: newPhone,
 		};
 
 		if (persons.find((person) => person.name === newName)) {
 			alert(`${newName} already present. Can't Add!`);
-		} else if (persons.find((person) => person.phone === newPhone)) {
+		} else if (persons.find((person) => person.number === newPhone)) {
 			alert(`${newPhone} already present. Can't Add!`);
 		} else {
-			setPersons(persons.concat(recordObject));
-			setNewName("");
-			setNewPhone("");
+			addNew(recordObject).then((returnedData) => {
+				console.log(returnedData);
+				setPersons(persons.concat(returnedData));
+				setNewName("");
+				setNewPhone("");
+			});
 		}
 	};
 
@@ -66,11 +77,11 @@ const App = () => {
 				event={handleFilterNameChange}
 			/>
 			<ul>
-				{matchedContacts.map((person, index) => (
+				{matchedContacts.map((person) => (
 					<ListItem
-						key={index}
+						key={person.id}
 						name={person.name}
-						phone={person.phone}
+						phone={person.number}
 					/>
 				))}
 			</ul>
@@ -85,11 +96,11 @@ const App = () => {
 
 			<h2>Contact List</h2>
 			<ul>
-				{persons.map((person, index) => (
+				{persons.map((person) => (
 					<ListItem
-						key={index}
+						key={person.id}
 						name={person.name}
-						phone={person.phone}
+						phone={person.number}
 					/>
 				))}
 			</ul>
