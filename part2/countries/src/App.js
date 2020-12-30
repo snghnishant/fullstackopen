@@ -2,8 +2,12 @@ import React from "react";
 import getAll from "./Services/countries";
 import "./App.css";
 
-const CountryName = ({ name }) => {
-	return <p>{name}</p>;
+const CountryName = ({ name, showDataHandler }) => {
+	return (
+		<div>
+			<p>{name}</p>
+		</div>
+	);
 };
 
 const CountryData = ({ name, capital, population, languages, flag }) => {
@@ -26,8 +30,11 @@ const CountryData = ({ name, capital, population, languages, flag }) => {
 };
 
 const App = () => {
+	const showInit = new Array(10).fill(false);
+
 	const [searchStr, setSearchStr] = React.useState("");
 	const [countries, setCountries] = React.useState([]);
+	const [showData, setShowData] = React.useState(showInit);
 
 	const moreFilters = "Too many matches, specify another filter";
 
@@ -61,9 +68,31 @@ const App = () => {
 						flag={countries[0].flag}
 					/>
 				) : countries.length <= 10 && countries.length > 0 ? (
-					countries.map((country, index) => (
-						<CountryName key={index} name={country.name} />
-					))
+					<div>
+						{countries.map((country, index) => (
+							<div>
+								<CountryName name={country.name} />
+								<button
+									onClick={() => {
+										const showArr = [...showData];
+										showArr[index] = !showArr[index];
+										setShowData(showArr);
+									}}
+								>
+									{showData[index] ? "hide" : "show"}
+								</button>
+								{showData[index] ? (
+									<CountryData
+										name={country.name}
+										capital={country.capital}
+										population={country.population}
+										languages={country.languages}
+										flag={country.flag}
+									/>
+								) : null}
+							</div>
+						))}
+					</div>
 				) : (
 					<p>{moreFilters}</p>
 				)}
