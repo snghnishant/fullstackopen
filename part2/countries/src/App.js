@@ -40,6 +40,7 @@ const App = () => {
 
 	const inputHandler = (event) => {
 		setSearchStr(event.target.value);
+		setShowData(showInit);
 	};
 
 	// Fetching data
