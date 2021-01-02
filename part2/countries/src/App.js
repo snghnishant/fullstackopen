@@ -1,30 +1,12 @@
 import React from "react";
-import getAll from "./Services/countries";
 import "./App.css";
+import CountryData from "./Components/countrydata";
+import getAll from "./Services/countries";
 
-const CountryName = ({ name, showDataHandler }) => {
+const CountryName = ({ name }) => {
 	return (
 		<div>
 			<p>{name}</p>
-		</div>
-	);
-};
-
-const CountryData = ({ name, capital, population, languages, flag }) => {
-	return (
-		<div>
-			<h1>{name}</h1>
-			<div>
-				<p>Capital: {capital}</p>
-				<p>Population: {population}</p>
-			</div>
-			<h2>Languages</h2>
-			<ul>
-				{languages.map((lang) => (
-					<li>{lang.name}</li>
-				))}
-			</ul>
-			<img style={{ width: 120 }} src={flag} alt={name} />
 		</div>
 	);
 };
@@ -38,6 +20,7 @@ const App = () => {
 
 	const moreFilters = "Too many matches, specify another filter";
 
+	// Onchange Input handler
 	const inputHandler = (event) => {
 		setSearchStr(event.target.value);
 		setShowData(showInit);
@@ -61,18 +44,12 @@ const App = () => {
 			</div>
 			<div>
 				{countries.length === 0 ? null : countries.length === 1 ? (
-					<CountryData
-						name={countries[0].name}
-						capital={countries[0].capital}
-						population={countries[0].population}
-						languages={countries[0].languages}
-						flag={countries[0].flag}
-					/>
+					<CountryData country={countries[0]} />
 				) : countries.length <= 10 && countries.length > 0 ? (
 					<div>
 						{countries.map((country, index) => (
 							<div>
-								<CountryName name={country.name} />
+								<CountryName key={index} name={country.name} />
 								<button
 									onClick={() => {
 										const showArr = [...showData];
@@ -83,13 +60,7 @@ const App = () => {
 									{showData[index] ? "hide" : "show"}
 								</button>
 								{showData[index] ? (
-									<CountryData
-										name={country.name}
-										capital={country.capital}
-										population={country.population}
-										languages={country.languages}
-										flag={country.flag}
-									/>
+									<CountryData country={country} />
 								) : null}
 							</div>
 						))}
