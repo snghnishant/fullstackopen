@@ -3,7 +3,12 @@ import "./App.css";
 import ListItem from "./Components/listItem";
 import ContactForm from "./Components/contactForm";
 import SearchForm from "./Components/searchContact";
-import { getAll, addNew, deleteContact } from "./Services/persons";
+import {
+	getAll,
+	addNew,
+	deleteContact,
+	updateContact,
+} from "./Services/persons";
 
 const App = () => {
 	//State Initialization
@@ -36,7 +41,23 @@ const App = () => {
 		};
 
 		if (persons.find((person) => person.name === newName)) {
-			alert(`${newName} already present. Can't Add!`);
+			const updateAction = window.confirm(
+				`${newName} is already added to phonebook, do you want to update the number?`
+			);
+
+			if (updateAction) {
+				const index = persons.findIndex(
+					(person) => person.name === newName
+				);
+
+				const updatedData = { ...persons[index], number: newPhone };
+
+				updateContact(updatedData).then(() => {
+					setNewName("");
+					setNewPhone("");
+					getAll().then((newData) => setPersons(newData));
+				});
+			}
 		} else if (persons.find((person) => person.number === newPhone)) {
 			alert(`${newPhone} already present. Can't Add!`);
 		} else {
