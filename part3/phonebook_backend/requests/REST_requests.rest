@@ -8,7 +8,7 @@ GET http://localhost:3001/info/
 GET http://localhost:3001/api/persons/
 
 ### Get single person
-GET http://localhost:3001/api/persons/
+GET http://localhost:3001/api/persons/400
 
 ### Delete single person
 DELETE http://localhost:3001/api/persons/3
