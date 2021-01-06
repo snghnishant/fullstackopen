@@ -10,12 +10,38 @@ import {
 	updateContact,
 } from "./Services/persons";
 
+const Notification = ({ message }) => {
+	return (
+		<p
+			style={{
+				color: "green",
+			}}
+		>
+			{message}
+		</p>
+	);
+};
+
+const Error = ({ message }) => {
+	return (
+		<p
+			style={{
+				color: "red",
+			}}
+		>
+			{message}
+		</p>
+	);
+};
+
 const App = () => {
 	//State Initialization
 	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState("");
 	const [newPhone, setNewPhone] = useState("");
 	const [filterName, setFilterName] = useState("");
+	const [notification, setNotification] = useState(null);
+	const [errorMessage, setErrorMessage] = useState(null);
 
 	//Event handlers
 	const handleFilterNameChange = (event) => {
@@ -56,16 +82,28 @@ const App = () => {
 					setNewName("");
 					setNewPhone("");
 					getAll().then((newData) => setPersons(newData));
+					setNotification(
+						`${updatedData.name} phone number has been updated to ${updatedData.number}`
+					);
+					setTimeout(() => {
+						setNotification(null);
+					}, 5000);
 				});
 			}
 		} else if (persons.find((person) => person.number === newPhone)) {
-			alert(`${newPhone} already present. Can't Add!`);
+			setErrorMessage(`${newPhone} already present. Can't Add!`);
+			setTimeout(() => {
+				setErrorMessage(null);
+			}, 5000);
 		} else {
 			addNew(recordObject).then((returnedData) => {
-				console.log(returnedData);
 				setPersons(persons.concat(returnedData));
 				setNewName("");
 				setNewPhone("");
+				setNotification(`${recordObject.name} was added to list.`);
+				setTimeout(() => {
+					setNotification(null);
+				}, 5000);
 			});
 		}
 	};
@@ -74,9 +112,17 @@ const App = () => {
 	const handleDelete = (id, name) => {
 		const res = window.confirm(`Delete Contact ${name}`);
 		if (res) {
-			deleteContact(id).then(() => {
-				getAll().then((newData) => setPersons(newData));
-			});
+			deleteContact(id)
+				.then(() => {
+					getAll().then((newData) => setPersons(newData));
+				})
+				.catch((error) => {
+					setErrorMessage(`${name} already removed from the list.`);
+					setTimeout(() => {
+						setErrorMessage(null);
+					}, 5000);
+					getAll().then((newData) => setPersons(newData));
+				});
 		}
 	};
 
@@ -99,6 +145,8 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phone Book</h2>
+			<Notification message={notification} />
+			<Error message={errorMessage} />
 			<SearchForm
 				filterName={filterName}
 				event={handleFilterNameChange}
