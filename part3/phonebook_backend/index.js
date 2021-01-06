@@ -33,6 +33,15 @@ app.get("/", (req, res) => {
 	res.send(`<h1>Phone Book</h1>`);
 });
 
+// info route
+app.get("/info", (req, res) => {
+	const date = new Date();
+	const total = persons.length;
+	res.send(`<p>Phonebook has info for ${total} people</p>
+        <p>${date}</p>
+    `);
+});
+
 // get all
 app.get("/api/persons", (req, res) => {
 	res.json(persons);
