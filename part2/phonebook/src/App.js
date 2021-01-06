@@ -1,27 +1,16 @@
 import { React, useState, useEffect } from "react";
-import axios from "axios";
 import "./App.css";
 import ListItem from "./Components/listItem";
 import ContactForm from "./Components/contactForm";
 import SearchForm from "./Components/searchContact";
-import { getAll, addNew } from "./Services/persons";
+import { getAll, addNew, deleteContact } from "./Services/persons";
 
 const App = () => {
-	//Initial fetching of data from the json-server
-	const fetchInitData = () => {
-		getAll().then((initialData) => setPersons(initialData));
-	};
-
 	//State Initialization
 	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState("");
 	const [newPhone, setNewPhone] = useState("");
 	const [filterName, setFilterName] = useState("");
-
-	//Fetching and data initialization
-	useEffect(fetchInitData, []);
-
-	console.log("Render", persons.length);
 
 	//Event handlers
 	const handleFilterNameChange = (event) => {
@@ -60,6 +49,16 @@ const App = () => {
 		}
 	};
 
+	// delete contact handler
+	const handleDelete = (id, name) => {
+		const res = window.confirm(`Delete Contact ${name}`);
+		if (res) {
+			deleteContact(id).then(() => {
+				getAll().then((newData) => setPersons(newData));
+			});
+		}
+	};
+
 	// Case Insensitive contact filtering
 	const matchedContacts =
 		filterName !== ""
@@ -68,10 +67,17 @@ const App = () => {
 			  )
 			: [];
 
+	//Initial fetching of data from the json-server
+	const fetchInitData = () => {
+		getAll().then((initialData) => setPersons(initialData));
+	};
+
+	//Fetching and data initialization
+	useEffect(fetchInitData, []);
+
 	return (
 		<div>
 			<h2>Phone Book</h2>
-
 			<SearchForm
 				filterName={filterName}
 				event={handleFilterNameChange}
@@ -97,11 +103,16 @@ const App = () => {
 			<h2>Contact List</h2>
 			<ul>
 				{persons.map((person) => (
-					<ListItem
-						key={person.id}
-						name={person.name}
-						phone={person.number}
-					/>
+					<li key={person.id}>
+						{person.name} {person.number}
+						<button
+							onClick={() => {
+								handleDelete(person.id, person.name);
+							}}
+						>
+							Delete
+						</button>
+					</li>
 				))}
 			</ul>
 		</div>
