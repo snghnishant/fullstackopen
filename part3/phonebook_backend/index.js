@@ -58,7 +58,34 @@ app.get("/api/persons/:id", (req, res) => {
 	}
 });
 
+// generate random id
+const generateId = () => {
+	const randomID = Math.floor(Math.random() * 69420);
+	return randomID;
+};
+
 // post data
+app.post("/api/persons", (req, res) => {
+	const body = req.body;
+	if (!body.name || !body.number) {
+		return res.status(400).json({ error: "Content Missing" });
+	}
+
+	if (persons.find((p) => p.name === body.name)) {
+		return res
+			.status(400)
+			.json({ error: "Name already exists, it should be unique" });
+	}
+
+	const person = {
+		id: generateId(),
+		name: body.name,
+		number: body.number,
+	};
+
+	persons = persons.concat(person);
+	res.json(person);
+});
 
 // delete single
 app.delete("/api/persons/:id", (req, res) => {
