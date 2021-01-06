@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 // persons object
-const persons = [
+let persons = [
 	{
 		name: "Arto Hellas",
 		number: "9876543210",
@@ -53,6 +53,20 @@ app.get("/api/persons/:id", (req, res) => {
 	const person = persons.find((el) => el.id === id);
 	if (person) {
 		res.json(person);
+	} else {
+		res.status(400).end();
+	}
+});
+
+// post data
+
+// delete single
+app.delete("/api/persons/:id", (req, res) => {
+	const id = parseInt(req.params.id);
+	const personExists = persons.find((el) => el.id === id);
+	if (personExists) {
+		persons = persons.filter((el) => el.id !== id);
+		res.status(204).end();
 	} else {
 		res.status(400).end();
 	}
