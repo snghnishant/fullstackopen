@@ -96,7 +96,12 @@ const App = () => {
 				setErrorMessage(null);
 			}, 5000);
 		} else {
-			if (!newName === "" || !newPhone === "") {
+			if (newName === "" || newPhone === "") {
+				setErrorMessage(`Please fill both the fields`);
+				setTimeout(() => {
+					setErrorMessage(null);
+				}, 5000);
+			} else {
 				addNew(recordObject).then((returnedData) => {
 					setPersons(persons.concat(returnedData));
 					setNewName("");
@@ -106,11 +111,6 @@ const App = () => {
 						setNotification(null);
 					}, 5000);
 				});
-			} else {
-				setErrorMessage(`Please fill both the fields`);
-				setTimeout(() => {
-					setErrorMessage(null);
-				}, 5000);
 			}
 		}
 	};
