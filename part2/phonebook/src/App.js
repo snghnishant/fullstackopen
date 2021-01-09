@@ -96,15 +96,22 @@ const App = () => {
 				setErrorMessage(null);
 			}, 5000);
 		} else {
-			addNew(recordObject).then((returnedData) => {
-				setPersons(persons.concat(returnedData));
-				setNewName("");
-				setNewPhone("");
-				setNotification(`${recordObject.name} was added to list.`);
+			if (!newName === "" || !newPhone === "") {
+				addNew(recordObject).then((returnedData) => {
+					setPersons(persons.concat(returnedData));
+					setNewName("");
+					setNewPhone("");
+					setNotification(`${recordObject.name} was added to list.`);
+					setTimeout(() => {
+						setNotification(null);
+					}, 5000);
+				});
+			} else {
+				setErrorMessage(`Please fill both the fields`);
 				setTimeout(() => {
-					setNotification(null);
+					setErrorMessage(null);
 				}, 5000);
-			});
+			}
 		}
 	};
 
