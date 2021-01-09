@@ -1,10 +1,13 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 const app = express();
 
 //middlewares
+app.use(cors());
 app.use(express.json());
+app.use(express.static("build"));
 // app.use(morgan('tiny'));
 morgan.token("body", (req, res) => JSON.stringify(req.body));
 app.use(
@@ -38,16 +41,21 @@ let persons = [
 ];
 
 // default route
-app.get("/", (req, res) => {
-	res.send(`<h1>Phone Book</h1>`);
-});
+// app.get("/", (req, res) => {
+// 	res.send(`<h1>Phone Book</h1>`);
+// });
 
 // info route
-app.get("/info", (req, res) => {
+app.get("/api", (req, res) => {
 	const date = new Date();
 	const total = persons.length;
 	res.send(`<p>Phonebook has info for ${total} people</p>
-        <p>${date}</p>
+		<p>${date}</p> <br>
+		<h3>API Routes </h3>
+		<p>GET ALL: /api/persons</p>
+		<p>GET Single: /api/persons/id</p>
+		<p>POST: /api/persons/</p>
+		<p>DELETE: /api/persons/id</p>
     `);
 });
 
@@ -108,7 +116,7 @@ app.delete("/api/persons/:id", (req, res) => {
 	}
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-	console.log(`App running at http://localhost:${PORT}`);
+	console.log(`App running at ${PORT}`);
 });
