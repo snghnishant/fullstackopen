@@ -1,119 +1,83 @@
+require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
 
+const Person = require("./models/person");
+
 const app = express();
 
-//middlewares
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static("build"));
-// app.use(morgan('tiny'));
-morgan.token("body", (req, res) => JSON.stringify(req.body));
-app.use(
-	morgan(
-		":method :url :status :res[content-length] - :response-time ms :body"
-	)
-);
+app.use(morgan("tiny"));
 
-// persons object
-let persons = [
-	{
-		name: "Arto Hellas",
-		number: "9876543210",
-		id: 1,
-	},
-	{
-		name: "Ada Lovelace",
-		number: "39-44-5323523",
-		id: 2,
-	},
-	{
-		name: "Dan Abramov",
-		number: "12-43-234345",
-		id: 3,
-	},
-	{
-		name: "Mary Poppendieck",
-		number: "39-23-6423122",
-		id: 4,
-	},
-];
+console.log("Connecting to Database...");
 
-// default route
-// app.get("/", (req, res) => {
-// 	res.send(`<h1>Phone Book</h1>`);
-// });
-
-// info route
-app.get("/api", (req, res) => {
-	const date = new Date();
-	const total = persons.length;
-	res.send(`<p>Phonebook has info for ${total} people</p>
-		<p>${date}</p> <br>
-		<h3>API Routes </h3>
-		<p>GET ALL: /api/persons</p>
-		<p>GET Single: /api/persons/id</p>
-		<p>POST: /api/persons/</p>
-		<p>DELETE: /api/persons/id</p>
-    `);
+mongoose.connect(process.env.MONGODB_URI, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useFindAndModify: false,
+	useCreateIndex: true,
 });
 
-// get all
+console.log("Connection Successful!");
+
+// Get all persons
 app.get("/api/persons", (req, res) => {
-	res.json(persons);
+	Person.find({}).then((persons) => {
+		res.json(persons);
+	});
 });
 
-// get single
+// Get single person
 app.get("/api/persons/:id", (req, res) => {
-	const id = parseInt(req.params.id);
-	const person = persons.find((el) => el.id === id);
-	if (person) {
-		res.json(person);
-	} else {
-		res.status(400).end();
-	}
+	const id = req.params.id;
+	Person.findById(id)
+		.then((person) => {
+			if (person) res.json(person);
+			else res.status(404).end();
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(400).send({ error: "Malformatted ID" });
+		});
 });
 
-// generate random id
-const generateId = () => {
-	const randomID = Math.floor(Math.random() * 69420);
-	return randomID;
-};
-
-// post data
+// Save new data
 app.post("/api/persons", (req, res) => {
 	const body = req.body;
 	if (!body.name || !body.number) {
 		return res.status(400).json({ error: "Content Missing" });
 	}
 
-	if (persons.find((p) => p.name === body.name)) {
-		return res
-			.status(400)
-			.json({ error: "Name already exists, it should be unique" });
-	}
-
-	const person = {
-		id: generateId(),
+	const person = new Person({
 		name: body.name,
-		number: body.number,
-	};
+		phone: body.number,
+	});
 
-	persons = persons.concat(person);
-	res.json(person);
+	person
+		.save()
+		.then((savedData) => res.json(savedData))
+		.catch((error) => {
+			console.log(error);
+			res.status(500).send({ error: "Server Error" });
+		});
 });
 
-// delete single
+// Delete single person
 app.delete("/api/persons/:id", (req, res) => {
-	const id = parseInt(req.params.id);
-	const personExists = persons.find((el) => el.id === id);
-	if (personExists) {
-		persons = persons.filter((el) => el.id !== id);
-		res.status(204).end();
-	} else {
-		res.status(400).end();
-	}
+	const id = req.params.id;
+	Person.findByIdAndRemove(id)
+		.then((result) => {
+			res.status(204).end();
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(400).send({ error: "Malformatted ID" });
+		});
 });
 
 const PORT = process.env.PORT || 3001;
