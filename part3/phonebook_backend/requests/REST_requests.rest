@@ -1,19 +1,22 @@
 ### Default
 GET http://localhost:3001/
 
-### Info
-GET http://localhost:3001/info/
-
 ### GET all persons
 GET http://localhost:3001/api/persons/
 
 ### Get single person
 GET http://localhost:3001/api/persons/400
 
+### Get single person
+GET http://localhost:3001/api/persons/600d6f129c7c14271ca07713
+
 ### Delete single person
 DELETE http://localhost:3001/api/persons/3
 
-### POST a note
+### Delete single person
+DELETE http://localhost:3001/api/persons/600d6f129c7c14271ca07713
+
+### POST new Data
 POST http://localhost:3001/api/persons/
 Content-Type: application/json
 
