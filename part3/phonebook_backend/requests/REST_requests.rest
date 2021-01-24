@@ -1,6 +1,12 @@
 ### Default
 GET http://localhost:3001/
 
+### unknown endpoint
+GET http://localhost:3001/api/
+
+### info endpoint
+GET http://localhost:3001/info/
+
 ### GET all persons
 GET http://localhost:3001/api/persons/
 
@@ -14,7 +20,7 @@ GET http://localhost:3001/api/persons/600d6f129c7c14271ca07713
 DELETE http://localhost:3001/api/persons/3
 
 ### Delete single person
-DELETE http://localhost:3001/api/persons/600d6f129c7c14271ca07713
+DELETE http://localhost:3001/api/persons/600da0d9ba04a3439c8befb9
 
 ### POST new Data
 POST http://localhost:3001/api/persons/

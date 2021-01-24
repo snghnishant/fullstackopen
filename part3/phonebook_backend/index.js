@@ -25,6 +25,20 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 console.log("Connection Successful!");
 
+// Get  info
+app.get("/info", (req, res) => {
+	Person.estimatedDocumentCount({}, function (err, result) {
+		if (err) {
+			console.log(err);
+		} else {
+			const totalEntries = result;
+			const date = new Date();
+			res.send(`<p>Current time: ${date}</p>
+		<strong>Database has records of ${totalEntries} person</strong>`);
+		}
+	});
+});
+
 // Get all persons
 app.get("/api/persons", (req, res) => {
 	Person.find({}).then((persons) => {
@@ -69,12 +83,27 @@ app.post("/api/persons", (req, res, next) => {
 		});
 });
 
+// Update data
+app.put("/api/persons/:id", (req, res, next) => {
+	const body = req.body;
+	const person = {
+		name: body.name,
+		phone: body.number,
+	};
+
+	Person.findByIdAndUpdate(req.params.id, person, { new: true })
+		.then((updatedData) => {
+			res.json(updatedData);
+		})
+		.catch((error) => next(error));
+});
+
 // Delete single person
 app.delete("/api/persons/:id", (req, res, next) => {
 	const id = req.params.id;
 	Person.findByIdAndRemove(id)
 		.then((result) => {
-			res.status(204).end();
+			res.status(204).send(result);
 		})
 		.catch((error) => {
 			// console.log(error);
