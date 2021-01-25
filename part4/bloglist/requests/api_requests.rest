@@ -1,0 +1,14 @@
+### get all blog list
+GET http://localhost:3001/api/blogs
+
+
+### add new blog to list
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Resource oriented architecture",
+    "author": "wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Resource-oriented_architecture",
+    "likes": 5
+}
