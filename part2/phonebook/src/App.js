@@ -78,17 +78,24 @@ const App = () => {
 
 				const updatedData = { ...persons[index], number: newPhone };
 
-				updateContact(updatedData).then(() => {
-					setNewName("");
-					setNewPhone("");
-					getAll().then((newData) => setPersons(newData));
-					setNotification(
-						`${updatedData.name} phone number has been updated to ${updatedData.number}`
-					);
-					setTimeout(() => {
-						setNotification(null);
-					}, 5000);
-				});
+				updateContact(updatedData)
+					.then(() => {
+						setNewName("");
+						setNewPhone("");
+						getAll().then((newData) => setPersons(newData));
+						setNotification(
+							`${updatedData.name} phone number has been updated to ${updatedData.number}`
+						);
+						setTimeout(() => {
+							setNotification(null);
+						}, 5000);
+					})
+					.catch((error) => {
+						setErrorMessage(`${error.response.data.error}`);
+						setTimeout(() => {
+							setErrorMessage(null);
+						}, 5000);
+					});
 			}
 		} else if (persons.find((person) => person.number === newPhone)) {
 			setErrorMessage(`${newPhone} already present. Can't Add!`);
@@ -102,15 +109,24 @@ const App = () => {
 					setErrorMessage(null);
 				}, 5000);
 			} else {
-				addNew(recordObject).then((returnedData) => {
-					setPersons(persons.concat(returnedData));
-					setNewName("");
-					setNewPhone("");
-					setNotification(`${recordObject.name} was added to list.`);
-					setTimeout(() => {
-						setNotification(null);
-					}, 5000);
-				});
+				addNew(recordObject)
+					.then((returnedData) => {
+						setPersons(persons.concat(returnedData));
+						setNewName("");
+						setNewPhone("");
+						setNotification(
+							`${recordObject.name} was added to list.`
+						);
+						setTimeout(() => {
+							setNotification(null);
+						}, 5000);
+					})
+					.catch((error) => {
+						setErrorMessage(`${error.response.data.error}`);
+						setTimeout(() => {
+							setErrorMessage(null);
+						}, 5000);
+					});
 			}
 		}
 	};
