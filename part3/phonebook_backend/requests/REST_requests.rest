@@ -30,3 +30,12 @@ Content-Type: application/json
     "name": "Nishant",
     "number": 9876543210
 }
+
+### POST new Data to check Validation error
+POST http://localhost:3001/api/persons/
+Content-Type: application/json
+
+{
+    "name": "Ns",
+    "number": "1234567890"
+}
